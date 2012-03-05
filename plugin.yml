@@ -1,12 +1,10 @@
 name: Guilder
 main: org.dazzlewire.Guilder.Guilder
-version: 0.0.2
+version: 0.0.3
 description: >
              Hello World!
 commands:
   guilder:
     description: Use the Guilder plugin.
   g:
-    description: Use the guild-chat to chat with your friends...
-  hej:
-    description: fugl.á.
+    description: Use the guild-chat to chat with your friends.
