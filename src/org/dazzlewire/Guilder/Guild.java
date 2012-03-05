@@ -97,7 +97,7 @@ public class Guild {
 			try {
 				if(guildSpecific.get("Guildmaster").equals("") || guildSpecific.get("Guildmaster").equals("AddAdminNameHere")) {
 					// Add defaults
-					guildSpecific.addDefault("Guildmaster", "AddAdminNameHere");
+					guildSpecific.addDefault("Guildmaster", guildMaster);
 					guildSpecific.options().copyDefaults(true);
 					
 					// Log
@@ -112,7 +112,7 @@ public class Guild {
 				}
 			} catch(NullPointerException npe) {
 				// Add defaults
-				guildSpecific.addDefault("Guildmaster", "AddAdminNameHere");
+				guildSpecific.addDefault("Guildmaster", guildMaster);
 				guildSpecific.options().copyDefaults(true);
 				
 				// Log

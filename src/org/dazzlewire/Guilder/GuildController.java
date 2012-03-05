@@ -114,7 +114,7 @@ public class GuildController {
 		// Make a new guild if the config-file is new
 		if(newConfigFile == true) {
         	// Add a default guild to show the user how to use guild syntax
-        	createGuild("TestGuild", "feupeu");
+        	createGuild("TestGuild", "AdminNameGoesHere");
         	guilds.addDefault("Guilds", Arrays.asList()); // Add "Guilds"-list to guilds.yml
         	
         	guilds.options().copyDefaults(true);
@@ -164,6 +164,9 @@ public class GuildController {
 		
 		// Add guild to the arraylist guildList
 		guildList.add(g); 
+		
+		// Add the guildmaster
+		g.setGuildMaster(guildMasterName);
 		
 		// Add the guild to the guilds.yml-file
 		guilds.getList("Guilds").add(g.getGuildName()); // Insert it into guilds.yml
