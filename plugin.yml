@@ -7,4 +7,10 @@ commands:
   guilder:
     description: Use the Guilder plugin.
   g:
+<<<<<<< HEAD
     description: Use the guild-chat to chat with your friends.
+=======
+    description: Use the guild-chat to chat with your friends
+  hej:
+    description: fugl.
+>>>>>>> Test
