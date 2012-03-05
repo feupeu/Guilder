@@ -29,6 +29,7 @@ public class Guilder extends JavaPlugin implements Listener {
 	private YamlConfiguration config;
 	private GuildController guildController;
 	PluginDescriptionFile pdf;
+	boolean isInGuild = false;
 
 	/**
 	 * Called upon server start, restart or plugin enabeling
@@ -165,18 +166,31 @@ public class Guilder extends JavaPlugin implements Listener {
 								for (int i = 0; i < guildController.getGuildList().size(); i++) { // Run though all guilds
 									
 									// Check if the guild contains a player
-									for (int j = 0; j < guildController.getGuildList().size(); j++) {
+									for (int j = 0; j < guildController.getGuildList().get(i).getMemberArray().length; j++) {
 										
-										// TODO Run though all
+										// Set the boolean to false as default
+										isInGuild = false;
+										
+										// Check if the player is in the MemberArray
+										if(sender.getName().equals(guildController.getGuildList().get(i).getMemberArray()[j])) {
+											isInGuild = true;
+										}
 										
 									}
 									
 								}
 								
-								// Create the guild
-								guildController.createGuild(specifiedGuildName, sender.getName());
+								// If the player is not in a guild
+								if(!isInGuild) {
 								
-								sender.sendMessage(ChatColor.GREEN + "[Guilder]" + ChatColor.WHITE + " Congratulations. \"" + specifiedGuildName + "\" has been formed");
+									// Create the guild
+									guildController.createGuild(specifiedGuildName, sender.getName());
+									
+									sender.sendMessage(ChatColor.GREEN + "[Guilder]" + ChatColor.WHITE + " Congratulations. \"" + specifiedGuildName + "\" has been formed");
+									
+								} else { // If the player is in a guild
+									sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " You are already in a guild");
+								}
 								
 							} else { // There is already a guild with that name
 							sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " There is already a guild with the name \"" + args[1] + "\"");

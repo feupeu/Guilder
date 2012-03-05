@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 // Bukkit imports
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -182,12 +181,18 @@ public class Guild {
 		
 	}
 	
-	// Setters
+	/**
+	 * Sets the name of the guild
+	 * @param name What should the guild be called?
+	 */
 	public void setGuildName(String name) {
 		// Make sure that there is no spaces in the name
 		this.guildName = name.replace(" ", "_");
 	}
 	
+	/**
+	 * Load the MemberList from the guild specific file
+	 */
 	private void setMemberList() {
 		
 		// Load the memberlist from the file and add them to the arraylist
@@ -239,6 +244,14 @@ public class Guild {
 	 */
 	public HashMap<String, Rank> getRankList() {
 		return rankList;
+	}
+	
+	/**
+	 * Get the array with members
+	 * @return
+	 */
+	public Object[] getMemberArray() {
+		return memberArray;
 	}
 
 }
