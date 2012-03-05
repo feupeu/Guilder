@@ -30,6 +30,7 @@ public class Guilder extends JavaPlugin implements Listener {
 	private GuildController guildController;
 	PluginDescriptionFile pdf;
 	boolean isInGuild = false;
+	boolean ownGuild = false;
 
 	/**
 	 * Called upon server start, restart or plugin enabeling
@@ -162,14 +163,17 @@ public class Guilder extends JavaPlugin implements Listener {
 							// Check if the guild exists
 							if(!guildController.guildExists(specifiedGuildName)) {
 								
+								// Set the boolean to false as default
+								isInGuild = false;
+								
+								// Set the boolean to false as default
+								ownGuild = false;
+								
 								// Check if the player is in a guild
 								for (int i = 0; i < guildController.getGuildList().size(); i++) { // Run though all guilds
 									
 									// Check if the guild contains a player
 									for (int j = 0; j < guildController.getGuildList().get(i).getMemberArray().length; j++) {
-										
-										// Set the boolean to false as default
-										isInGuild = false;
 										
 										// Check if the player is in the MemberArray
 										if(sender.getName().equals(guildController.getGuildList().get(i).getMemberArray()[j])) {
@@ -178,15 +182,27 @@ public class Guilder extends JavaPlugin implements Listener {
 										
 									}
 									
+									// Check if the player is guildmaster in a guild
+									if(sender.getName().equals(guildController.getGuildList().get(i).getGuildMaster())) {
+										ownGuild = true;
+									}
+									
 								}
 								
 								// If the player is not in a guild
 								if(!isInGuild) {
 								
+									// If the player owns a guild
+									if(!ownGuild) {
+									
 									// Create the guild
 									guildController.createGuild(specifiedGuildName, sender.getName());
 									
 									sender.sendMessage(ChatColor.GREEN + "[Guilder]" + ChatColor.WHITE + " Congratulations. \"" + specifiedGuildName + "\" has been formed");
+									
+									} else { // The player owns a guild
+										sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " You already own a guild.");
+									}
 									
 								} else { // If the player is in a guild
 									sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " You are already in a guild");
