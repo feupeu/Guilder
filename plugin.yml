@@ -5,6 +5,6 @@ description: >
              Hello World!
 commands:
   guilder:
-    description: Use the Guilder plugin
+    description: Use the Guilder plugin.
   g:
-    description: Use the guild-chat to chat with your friends
+    description: Use the guild-chat to chat with your friends.
