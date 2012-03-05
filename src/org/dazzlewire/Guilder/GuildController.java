@@ -8,9 +8,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Date;
 
 // Bukkit import
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class GuildController {
@@ -21,6 +23,16 @@ public class GuildController {
 	private File guildSpecificFile;
 	private YamlConfiguration guildSpecific;
 	private Object[] tmpGuildList = null;
+	
+	/**
+	 * Contain all pending players and what Guild they are pending to.
+	 */
+	private HashMap<String,Guild> pendingPlayerGuild = new HashMap<String,Guild>();
+	
+	/**
+	 * Contain all pending players and when they started pending.
+	 */
+	private HashMap<String, Long> pendingPlayerTime = new HashMap<String, Long>();
 	
 	/**
 	 * Contains all guilds
@@ -223,6 +235,28 @@ public class GuildController {
 		return tmpHashMap.get(guildName);
 		
 		
+	}
+	//Setters
+	
+	public void setInvite(String playerName, Guild guild) {
+		
+		pendingPlayerGuild.put(playerName, guild);
+		pendingPlayerTime.put(playerName, System.currentTimeMillis());
+		
+	}
+	
+	//Getters
+	
+	//Gets a Map of player-names and the guild they have been invited to
+	public HashMap<String,Guild> getPendingPlayerGuild() {
+		
+		return pendingPlayerGuild;
+		
+	}
+	//Gets a Map of player-names and the time they were invited at
+	public HashMap<String, Long> getPendingPlayerTime() {
+		
+		return pendingPlayerTime;
 	}
 	
 }
