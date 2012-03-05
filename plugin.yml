@@ -1,6 +1,6 @@
 name: Guilder
 main: org.dazzlewire.Guilder.Guilder
-version: 0.0.3
+version: 0.0.4
 description: >
              Hello World!
 commands:
