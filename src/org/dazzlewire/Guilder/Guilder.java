@@ -30,8 +30,7 @@ public class Guilder extends JavaPlugin implements Listener {
 	private YamlConfiguration config;
 	private GuildController guildController;
 	PluginDescriptionFile pdf;
-	boolean isInGuild = false;
-	boolean ownGuild = false;
+	boolean isOnline = false;
 	/**
 	 * Online players
 	 */
@@ -166,30 +165,17 @@ public class Guilder extends JavaPlugin implements Listener {
 						
 							String specifiedGuildName = args[1]; 
 							
-							// TODO Check if the player is in a guild
 							
 							// Check if the guild exists
 							if(!guildController.guildExists(specifiedGuildName)) {
 								
-								// Set the boolean to false as default
-								isInGuild = false;
-								
-								// Set the boolean to false as default
-								ownGuild = false;
-								
-								
-								//TODO
-								/* Check if the player is guildmaster in a guild
-								if(sender.getName().equals(guildController.getGuildList().get(i).getGuildMaster())) {
-									ownGuild = true;
-								}*/
 								
 								
 								// If the player is not in a guild
-								if(!guildController.isInGuild(sender.getName())) {
+								if(!guildController.ownGuild(sender.getName())) {
 								
-									//TODO If the player owns a guild
-									if(!ownGuild) {
+									// If the player owns a guild
+									if(!guildController.isInGuild(sender.getName())) {
 									
 									// Create the guild
 									guildController.createGuild(specifiedGuildName, sender.getName());
@@ -197,11 +183,11 @@ public class Guilder extends JavaPlugin implements Listener {
 									sender.sendMessage(ChatColor.GREEN + "[Guilder]" + ChatColor.WHITE + " Congratulations. \"" + specifiedGuildName + "\" has been formed");
 									
 									} else { // The player owns a guild
-										sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " You already own a guild.");
+										sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " You are already in a guild.");
 									}
 									
 								} else { // If the player is in a guild
-									sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " You are already in a guild");
+									sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " You already own a guild");
 								}
 								
 							} else { // There is already a guild with that name
@@ -291,38 +277,54 @@ public class Guilder extends JavaPlugin implements Listener {
 						
 						if(args.length == 2) {
 							
-							if(guildController.isInGuild(sender.getName())) {
-							
-								if(!guildController.isInGuild(args[1])) {
+								//Checks if the sender is in a guild or is a guildmaster
+								if(guildController.ownGuild(sender.getName()) || guildController.isInGuild(sender.getName())) {
 									
-									for(int i = 0; i < onlinePlayers.length; i++) {
+									//Checks if the reciever of the invite is not in a guild
+									if(!guildController.isInGuild(args[1].toLowerCase())) {
 										
-										if(onlinePlayers[i].getName().equalsIgnoreCase((args[1].toLowerCase()))) {
-											guildController.setInvite(args[1], guildController.getGuildOfPlayer(sender.getName()));
-											sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "You have invited " + args[1] + " to join your guild. He will have to accept your invite using /guilder accept.");
-											onlinePlayers[i].sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "You have been invited to join  " + guildController.getGuildOfPlayer(sender.getName()).getGuildName() + " by " + sender.getName() +  ". Accept your invite using /guilder accept.");
-										} else {
-											sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + args[1] + " is not online.");
+										isOnline = false;
+										
+										//Run through all online players
+										for(int i = 0; i < onlinePlayers.length; i++) {
+											
+											//Check if the specific player is online
+											if(onlinePlayers[i].getName().toLowerCase().equalsIgnoreCase((args[1].toLowerCase()))) {
+												
+												guildController.setInvite(args[1].toLowerCase(), guildController.getGuildOfPlayer(sender.getName()));
+												
+												//Sends information to both sender and reciever
+												sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "You have invited " + onlinePlayers[i].getName() + " to join your guild. He will have to accept your invite using /guilder accept.");
+												onlinePlayers[i].sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "You have been invited to join " + guildController.getGuildOfPlayer(sender.getName()).getGuildName() + " by " + sender.getName() +  ". Accept your invite using /guilder accept.");
+												isOnline = true;
+												
+											} 
 										}
+										
+										if(!isOnline) {
+											sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + args[1].toLowerCase() + " is not online.");
+										}
+										
+									} else {
+										sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "A player with that name is already in a guild");
 									}
-									
 								} else {
-									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "A player with that name is already in a guild");
+									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are a not in a guild");
 								}
-							} else {
-								sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are a not in a guild");
-							}
+							
+							
 								
-						} else if(args.length > 2) {
+						} else if(args.length > 2) { //Check if the sender provide too many arguments
 							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "A player with that name does not exist");
 							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "/guilder invite <player-name>");
-						} else if(args.length == 1) {
+							
+						} else if(args.length == 1) { //Check if the sender do not provides enough arguments
 							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You need to provide a player-name");
 							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "/guilder invite <player-name>");
 						}
 					
 					} else if(args[0].equalsIgnoreCase("accept")){
-						//TODO - Accept the invite
+						
 					}
 				
 				}
@@ -342,11 +344,11 @@ public class Guilder extends JavaPlugin implements Listener {
 		
 		try {
 			// Try to get the item caught (Else catch NullPointerException)
-			event.getCaught();
+			event.getCaught().getEntityId();
 			
 			// TODO Add stuff that happends when a player catches a fish
 			
-			event.getPlayer().sendMessage("Sej fisk");
+			event.getPlayer().sendMessage("Sej fisk" + event.getCaught().getEntityId());
 		} catch(NullPointerException e) {
 			// Handle exception
 		}

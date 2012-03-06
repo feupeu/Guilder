@@ -238,7 +238,11 @@ public class GuildController {
 		
 	}
 	//Setters
-	
+	/**
+	 * Sends an invite to a player to join a guild
+	 * @param playerName
+	 * @param guild
+	 */
 	public void setInvite(String playerName, Guild guild) {
 		
 		pendingPlayerGuild.put(playerName, guild);
@@ -262,16 +266,34 @@ public class GuildController {
 	
 	public boolean isInGuild(String playerName) {
 		
+		
+		
 		for (int i = 0; i < getGuildList().size(); i++) { // Run through all guilds
 			
 			// Check if the guild contains a player
 			for (int j = 0; j < getGuildList().get(i).getMemberArray().length; j++) {
 				
 				// Check if the player is in the MemberArray
-				if(playerName.equals(getGuildList().get(i).getMemberArray()[j])) {
+				if(playerName.toLowerCase().equals((getGuildList().get(i).getMemberArray()[j].toString().toLowerCase()))) {
+					
 					return true;
 				}
 				
+			}
+			
+		}
+		
+		return false;
+		
+	}
+	
+	public boolean ownGuild(String playerName) {
+		
+		for (int i = 0; i < getGuildList().size(); i++) { // Run through all guilds
+			
+			// Check if the player is guildmaster of any guild
+			if(playerName.equalsIgnoreCase(getGuildList().get(i).getGuildMaster())) {
+				return true;
 			}
 			
 		}
@@ -300,5 +322,6 @@ public class GuildController {
 		return new Guild(p, "", "");
 		
 	}
+	
 	
 }
