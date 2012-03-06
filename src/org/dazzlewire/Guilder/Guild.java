@@ -183,13 +183,16 @@ public class Guild {
 	
 	public void addMember(String playerName) {
 		try {
-			memberArray[memberArray.length] = playerName;
 			guildSpecific.getList("Members").add(playerName);
 			try {
 				guildSpecific.save(guildSpecificFile);
 			} catch (IOException ioe) {
-				// Handle exception
+				checkFiles(); // Check if the file exists
 			}
+			
+			// Reload the config
+			fixGuild();
+			
 		} catch(NullPointerException npe)  {
 			fixGuild();
 			addMember(playerName);

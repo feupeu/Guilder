@@ -245,14 +245,21 @@ public class GuildController {
 	 */
 	public void setInvite(String playerName, Guild guild) {
 		
-		if(System.currentTimeMillis() - pendingPlayerTime.get(playerName) <= 5000 ){
-			
-			removeInvite(playerName, guild);
-			
-			//Adds player to the pending player HashMaps
+		// Try to check if there is a pending invite
+		try {
+			if(System.currentTimeMillis() - pendingPlayerTime.get(playerName) <= 5000 ){
+				
+				removeInvite(playerName, guild);
+				
+				// Add player to the pending player HashMaps
+				pendingPlayerGuild.put(playerName, guild);
+				pendingPlayerTime.put(playerName, System.currentTimeMillis());
+				
+			}
+		} catch(NullPointerException e) {
+			// Add player to the pending player HashMaps
 			pendingPlayerGuild.put(playerName, guild);
 			pendingPlayerTime.put(playerName, System.currentTimeMillis());
-			
 		}
 	}
 	
@@ -262,8 +269,15 @@ public class GuildController {
 	 * @param guild
 	 */
 	public void removeInvite(String playerName, Guild guild) {
-		pendingPlayerGuild.remove(playerName);
-		pendingPlayerTime.remove(playerName);
+		
+		// Check if there is a pending invite
+		try {
+			pendingPlayerGuild.remove(playerName);
+			pendingPlayerTime.remove(playerName);
+		} catch(NullPointerException e) {
+			
+		}
+
 	}
 	
 	//Getters

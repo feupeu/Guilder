@@ -285,13 +285,15 @@ public class Guilder extends JavaPlugin implements Listener {
 										
 										isOnline = false;
 										
+										onlinePlayers = Bukkit.getServer().getOnlinePlayers();
+										
 										//Run through all online players
 										for(int i = 0; i < onlinePlayers.length; i++) {
 											
 											//Check if the specific player is online
-											if(onlinePlayers[i].getName().equalsIgnoreCase((args[1]))) {
+											if(onlinePlayers[i].getName().equalsIgnoreCase(args[1])) {
 												
-												guildController.setInvite(args[1].toLowerCase(), guildController.getGuildOfPlayer(sender.getName()));
+												guildController.setInvite(onlinePlayers[i].getName(), guildController.getGuildOfPlayer(sender.getName()));
 												
 												//Sends information to both sender and reciever
 												sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "You have invited " + onlinePlayers[i].getName() + " to join your guild. He will have to accept your invite using /guilder accept.");
@@ -335,7 +337,7 @@ public class Guilder extends JavaPlugin implements Listener {
 								
 								//Adds the member to the specific guild
 								guildController.getPendingPlayerGuild().get(sender.getName()).addMember(sender.getName());
-								sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "Congratulations you have joined " + guildController.getPendingPlayerGuild().get(sender.getName()) + ".");	
+								sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "Congratulations you have joined " + guildController.getPendingPlayerGuild().get(sender.getName()).getGuildName() + ".");	
 							}
 							
 						}
