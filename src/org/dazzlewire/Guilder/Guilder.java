@@ -289,7 +289,7 @@ public class Guilder extends JavaPlugin implements Listener {
 										for(int i = 0; i < onlinePlayers.length; i++) {
 											
 											//Check if the specific player is online
-											if(onlinePlayers[i].getName().toLowerCase().equalsIgnoreCase((args[1].toLowerCase()))) {
+											if(onlinePlayers[i].getName().equalsIgnoreCase((args[1]))) {
 												
 												guildController.setInvite(args[1].toLowerCase(), guildController.getGuildOfPlayer(sender.getName()));
 												
@@ -322,8 +322,23 @@ public class Guilder extends JavaPlugin implements Listener {
 							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You need to provide a player-name");
 							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "/guilder invite <player-name>");
 						}
-					
+					/**
+					 * THE /guilder accept - command
+					 */
 					} else if(args[0].equalsIgnoreCase("accept")){
+						
+						//Check if the player is invites to a guild
+						if(guildController.getPendingPlayerGuild().containsKey(sender.getName())) {
+							
+							//Check if the player has been invited to a guild in the last 20 minutes
+							if(System.currentTimeMillis() - guildController.getPendingPlayerTime().get(sender.getName()) <= 1200000) {
+								
+								//Adds the member to the specific guild
+								guildController.getPendingPlayerGuild().get(sender.getName()).addMember(sender.getName());
+								sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "Congratulations you have joined " + guildController.getPendingPlayerGuild().get(sender.getName()) + ".");	
+							}
+							
+						}
 						
 					}
 				

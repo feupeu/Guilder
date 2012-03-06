@@ -245,9 +245,25 @@ public class GuildController {
 	 */
 	public void setInvite(String playerName, Guild guild) {
 		
-		pendingPlayerGuild.put(playerName, guild);
-		pendingPlayerTime.put(playerName, System.currentTimeMillis());
-		
+		if(System.currentTimeMillis() - pendingPlayerTime.get(playerName) <= 5000 ){
+			
+			removeInvite(playerName, guild);
+			
+			//Adds player to the pending player HashMaps
+			pendingPlayerGuild.put(playerName, guild);
+			pendingPlayerTime.put(playerName, System.currentTimeMillis());
+			
+		}
+	}
+	
+	/**
+	 * Removes the player from its current invite
+	 * @param playerName
+	 * @param guild
+	 */
+	public void removeInvite(String playerName, Guild guild) {
+		pendingPlayerGuild.remove(playerName);
+		pendingPlayerTime.remove(playerName);
 	}
 	
 	//Getters

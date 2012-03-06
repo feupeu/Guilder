@@ -162,7 +162,7 @@ public class Guild {
 		// Try to load the "Members"-list in the file
 		try {
 			guildSpecific.getList("Members").toArray(); // Make a tmp array with the guilds loaded from the file
-		} catch (NullPointerException npe) {
+		} catch(NullPointerException npe) {
 			// Add defaults
 			String[] anArray = {""};
 			guildSpecific.addDefault("Members", Arrays.asList(anArray));
@@ -179,6 +179,21 @@ public class Guild {
 			}
 		}
 		
+	}
+	
+	public void addMember(String playerName) {
+		try {
+			memberArray[memberArray.length] = playerName;
+			guildSpecific.getList("Members").add(playerName);
+			try {
+				guildSpecific.save(guildSpecificFile);
+			} catch (IOException ioe) {
+				// Handle exception
+			}
+		} catch(NullPointerException npe)  {
+			fixGuild();
+			addMember(playerName);
+		}
 	}
 	
 	/**
