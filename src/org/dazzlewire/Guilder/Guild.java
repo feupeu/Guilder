@@ -7,7 +7,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 // Bukkit imports
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class Guild {
@@ -39,7 +42,12 @@ public class Guild {
 	 */
 	private HashMap<String, Rank> rankList = new HashMap<String, Rank>();
 
-	private String guildMaster = "";
+	private String guildMaster;
+	
+	/**
+	 * An array with online players
+	 */
+	Player[] players;
 	
 	/**
 	 * Constructor for Guildclass
@@ -47,6 +55,9 @@ public class Guild {
 	 * @param guildName name of the guild
 	 */
 	public Guild(Plugin p, String guildName, String guildMaster) {
+		
+		// TODO Check if the guildname and guildmaster valid arguments
+		
 		this.p = p;
 		
 		this.guildName = guildName;
@@ -94,32 +105,11 @@ public class Guild {
 	private void fixGuild() {
 		
 		// Try to add "Guildmaster"
-			try {
-				if(!guildSpecific.get("Guildmaster").equals("") && !guildSpecific.get("Guildmaster").equals("AddAdminNameHere")) {
-					// Add defaults
-					guildSpecific.addDefault("Guildmaster", guildMaster);
-					guildSpecific.options().copyDefaults(true);
-					
-					// Save the file
-					try {
-						guildSpecific.save(guildSpecificFile);
-					} catch (IOException ioe) {
-						// Handle exception
-					}
-					
-					// Reload the config
-					guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
-				} else {
-					// Log
-					p.getServer().getLogger().info("[GUILDER] WARNING: The guild " + guildName + " does not have a guildmaster. Please add one in \"plugins" + File.separator + p.getDescription().getName() + File.separator + "guilds" + File.separator + guildName.toLowerCase() + ".yml\"");
-				}
-			} catch(NullPointerException npe) {
+		try {
+			if(!guildSpecific.get("Guildmaster").equals("") && !guildSpecific.get("Guildmaster").equals("AddAdminNameHere")) {
 				// Add defaults
 				guildSpecific.addDefault("Guildmaster", guildMaster);
 				guildSpecific.options().copyDefaults(true);
-				
-				// Log
-				p.getServer().getLogger().info("[GUILDER] WARNING: The guild " + guildName + " does not have a guildmaster. Please add one in \"plugins" + File.separator + p.getDescription().getName() + File.separator + "guilds" + File.separator + guildName.toLowerCase() + ".yml\"");
 				
 				// Save the file
 				try {
@@ -131,6 +121,21 @@ public class Guild {
 				// Reload the config
 				guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
 			}
+		} catch(NullPointerException npe) {
+			// Add defaults
+			guildSpecific.addDefault("Guildmaster", guildMaster);
+			guildSpecific.options().copyDefaults(true);
+			
+			// Save the file
+			try {
+				guildSpecific.save(guildSpecificFile);
+			} catch (IOException ioe) {
+				// Handle exception
+			}
+			
+			// Reload the config
+			guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
+		}
 		
 		// Try to add "Name"
 		try {
@@ -138,9 +143,6 @@ public class Guild {
 				// Add defaults
 				guildSpecific.addDefault("Name", guildName);
 				guildSpecific.options().copyDefaults(true);
-				
-				// Log
-				p.getServer().getLogger().info("Fixed the guildspecific-file for " + guildName + ".Guildname non existing.");
 				
 				// Save the file
 				try {
@@ -156,9 +158,6 @@ public class Guild {
 			// Add defaults
 			guildSpecific.addDefault("Name", guildName);
 			guildSpecific.options().copyDefaults(true);
-			
-			// Log
-			p.getServer().getLogger().info("Fixed the guildspecific-file for " + guildName + ". Guildname non existing.");
 			
 			// Save the file
 			try {
@@ -176,13 +175,15 @@ public class Guild {
 		try {
 			guildSpecific.getList("Members").toArray(); // Make a tmp array with the guilds loaded from the file
 		} catch(NullPointerException npe) {
-			// Add defaults
-			String[] anArray = {guildMaster};
-			guildSpecific.addDefault("Members", Arrays.asList(anArray));
-			guildSpecific.options().copyDefaults(true);
 			
-			// Log
-			p.getServer().getLogger().info("Fixed the guildspecific-file for " + guildName + ". Incorrect formatting. Members-list non existing.");
+			// Add defaults
+			Object[] tmpMembersArray = {"AdminNameGoesHere"};
+			
+			if(!guildMaster.equals("")) {
+				tmpMembersArray[0] = guildMaster;
+			}
+			guildSpecific.addDefault("Members", Arrays.asList(tmpMembersArray));
+			guildSpecific.options().copyDefaults(true);
 			
 			// Save the file
 			try {
@@ -198,7 +199,8 @@ public class Guild {
 		
 		// Add the guild master to the members list
 		try {
-			if(!Arrays.asList(guildSpecific.getList("Members").toArray()).contains(guildMaster)) {
+			if(!Arrays.asList(guildSpecific.getList("Members").toArray()).contains(guildSpecific.get("Guildmaster"))) {
+				
 				// Add the guildmaster
 				guildSpecific.getList("Members").add(guildSpecific.get("Guildmaster"));
 				
@@ -208,6 +210,10 @@ public class Guild {
 				} catch (IOException ioe) {
 					// Handle exception
 				}
+				
+				// Reload the config
+				guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
+				
 			}
 		} catch(NullPointerException npe) {
 			// Handle exception
@@ -234,12 +240,33 @@ public class Guild {
 	}
 	
 	/**
-	 * Sets the name of the guild
-	 * @param name What should the guild be called?
+	 * Send a message to the members of the guild
+	 * @param message The message the entire guild should recieve
+	 * @param playername The playername which the message should be send from. Leave blank if you want the guild to "announce"
 	 */
-	public void setGuildName(String name) {
-		// Make sure that there is no spaces in the name
-		this.guildName = name.replace(" ", "_");
+	public void sendMessage(String message, String playerName) {
+		
+		// Run though all online players and chech who is in the guild
+		players = Bukkit.getServer().getOnlinePlayers();
+		
+		// Format the message
+		message = message.trim().replaceAll(" +", " ");
+		
+		for (int i = 0; i < players.length; i++) {
+			
+			// Check if the player is in the guild
+			if(Arrays.asList(memberArray).contains(players[i].getName())) {
+				
+				// Check if name of the sender is provided
+				if(playerName.equalsIgnoreCase("")) {
+					players[i].sendMessage(ChatColor.DARK_GREEN + "[G] " + message);
+				} else { // A player name is provided
+					players[i].sendMessage(ChatColor.DARK_GREEN + "[G] " + playerName + ": " + message);
+				}
+			}
+			
+		}
+		
 	}
 	
 	/**

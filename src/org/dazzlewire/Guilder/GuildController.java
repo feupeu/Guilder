@@ -296,8 +296,6 @@ public class GuildController {
 	
 	public boolean isInGuild(String playerName) {
 		
-		
-		
 		for (int i = 0; i < getGuildList().size(); i++) { // Run through all guilds
 			
 			// Check if the guild contains a player

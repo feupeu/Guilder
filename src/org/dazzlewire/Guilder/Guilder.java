@@ -74,6 +74,37 @@ public class Guilder extends JavaPlugin implements Listener {
 	 */
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 
+		// Check if the command /g is used
+		if(cmd.getName().equalsIgnoreCase("g")) {
+			
+			// Check if the sender is a player
+			if(sender instanceof Player) {
+				
+				// Check if the player is sending a message (in the arguments)
+				if(args.length > 0) {
+				
+					// Check if the player is in a guild
+					if(guildController.isInGuild(sender.getName())) {
+						
+						// Make the arguments into a message
+						String message = "";
+						
+						for (int i = 0; i < args.length; i++) {
+							message = message + " " + args[i];
+						}
+						
+						// Send the message to the guild
+						guildController.getGuildOfPlayer(sender.getName()).sendMessage(message, sender.getName());
+						
+					} else { // The player is not in a guild
+						sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not in a guild");
+					}
+					
+				}
+				
+			}
+			
+		}
 		
 		// Check if the user used "/guilder..."
 		if(cmd.getName().equalsIgnoreCase("guilder")) {
@@ -352,7 +383,7 @@ public class Guilder extends JavaPlugin implements Listener {
 		// No right commands were found. Return false.
 		return false; 
 	}
-	
+
 	/**
 	 * Register events when a player fishes
 	 */
