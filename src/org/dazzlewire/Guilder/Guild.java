@@ -95,13 +95,10 @@ public class Guild {
 		
 		// Try to add "Guildmaster"
 			try {
-				if(guildSpecific.get("Guildmaster").equals("") || guildSpecific.get("Guildmaster").equals("AddAdminNameHere")) {
+				if(!guildSpecific.get("Guildmaster").equals("") && !guildSpecific.get("Guildmaster").equals("AddAdminNameHere")) {
 					// Add defaults
 					guildSpecific.addDefault("Guildmaster", guildMaster);
 					guildSpecific.options().copyDefaults(true);
-					
-					// Log
-					p.getServer().getLogger().info("[GUILDER] WARNING: The guild " + guildName + " does not have a guildmaster. Please add one in \"plugins" + File.separator + p.getDescription().getName() + File.separator + "guilds" + File.separator + guildName.toLowerCase() + ".yml\"");
 					
 					// Save the file
 					try {
@@ -109,6 +106,12 @@ public class Guild {
 					} catch (IOException ioe) {
 						// Handle exception
 					}
+					
+					// Reload the config
+					guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
+				} else {
+					// Log
+					p.getServer().getLogger().info("[GUILDER] WARNING: The guild " + guildName + " does not have a guildmaster. Please add one in \"plugins" + File.separator + p.getDescription().getName() + File.separator + "guilds" + File.separator + guildName.toLowerCase() + ".yml\"");
 				}
 			} catch(NullPointerException npe) {
 				// Add defaults
@@ -124,6 +127,9 @@ public class Guild {
 				} catch (IOException ioe) {
 					// Handle exception
 				}
+				
+				// Reload the config
+				guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
 			}
 		
 		// Try to add "Name"
@@ -142,6 +148,9 @@ public class Guild {
 				} catch (IOException ioe) {
 					// Handle exception
 				}
+				
+				// Reload the config
+				guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
 			}
 		} catch(NullPointerException npe) {
 			// Add defaults
@@ -157,6 +166,10 @@ public class Guild {
 			} catch (IOException ioe) {
 				// Handle exception
 			}
+			
+			// Reload the config
+			guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
+			
 		}
 		
 		// Try to load the "Members"-list in the file
@@ -164,7 +177,7 @@ public class Guild {
 			guildSpecific.getList("Members").toArray(); // Make a tmp array with the guilds loaded from the file
 		} catch(NullPointerException npe) {
 			// Add defaults
-			String[] anArray = {""};
+			String[] anArray = {guildMaster};
 			guildSpecific.addDefault("Members", Arrays.asList(anArray));
 			guildSpecific.options().copyDefaults(true);
 			
@@ -177,6 +190,27 @@ public class Guild {
 			} catch (IOException ioe) {
 				// Handle exception
 			}
+			
+			// Reload the config
+			guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
+			
+		}
+		
+		// Add the guild master to the members list
+		try {
+			if(!Arrays.asList(guildSpecific.getList("Members").toArray()).contains(guildMaster)) {
+				// Add the guildmaster
+				guildSpecific.getList("Members").add(guildSpecific.get("Guildmaster"));
+				
+				// Save the file
+				try {
+					guildSpecific.save(guildSpecificFile);
+				} catch (IOException ioe) {
+					// Handle exception
+				}
+			}
+		} catch(NullPointerException npe) {
+			// Handle exception
 		}
 		
 	}

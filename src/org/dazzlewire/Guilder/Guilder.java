@@ -76,7 +76,7 @@ public class Guilder extends JavaPlugin implements Listener {
 
 		
 		// Check if the user used "/guilder..."
-		if(cmd.getName().equalsIgnoreCase("guilder")){
+		if(cmd.getName().equalsIgnoreCase("guilder")) {
 			
 			// Check if the sender is a player
 			if(sender instanceof Player) {
