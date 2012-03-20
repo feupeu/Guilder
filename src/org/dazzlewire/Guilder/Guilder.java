@@ -175,7 +175,7 @@ public class Guilder extends JavaPlugin implements Listener {
 						for (int i = (pageNumber * linePerPage); i < (pageNumber * linePerPage) + linePerPage; i++) {
 							// Check if the array is empty
 							if(!guildList.get(i).getGuildName().equals("")) {
-								sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + guildList.get(i).getGuildName());
+								sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + guildList.get(i).getGuildName() + " [" + guildList.get(i).getGuildSize() + "]");
 							}
 						}
 						

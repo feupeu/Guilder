@@ -332,6 +332,16 @@ public class Guild {
 	public Object[] getMemberArray() {
 		return memberArray;
 	}
+	
+	/**
+	 * Get the amount of players in the guild
+	 * @return
+	 */
+	public int getGuildSize() {
+		
+		return memberArray.length;
+		
+	}
 
 }
 //
