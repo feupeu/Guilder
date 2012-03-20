@@ -383,25 +383,6 @@ public class Guilder extends JavaPlugin implements Listener {
 		// No right commands were found. Return false.
 		return false; 
 	}
-
-	/**
-	 * Register events when a player fishes
-	 */
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerFish(PlayerFishEvent event) throws InterruptedException {
-		
-		try {
-			// Try to get the item caught (Else catch NullPointerException)
-			event.getCaught().getEntityId();
-			
-			// TODO Add stuff that happends when a player catches a fish
-			
-			event.getPlayer().sendMessage("Sej fisk" + event.getCaught().getEntityId());
-		} catch(NullPointerException e) {
-			// Handle exception
-		}
-		
-	}
 	
 	/**
 	 * Add default values to the config file
