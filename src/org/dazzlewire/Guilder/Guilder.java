@@ -28,6 +28,7 @@ public class Guilder extends JavaPlugin implements Listener {
 	private GuildController guildController;
 	PluginDescriptionFile pdf;
 	boolean isOnline = false;
+	String listOfGuildMembers = "";
 	/**
 	 * Online players
 	 */
@@ -366,7 +367,70 @@ public class Guilder extends JavaPlugin implements Listener {
 								//Adds the member to the specific guild
 								guildController.getPendingPlayerGuild().get(sender.getName()).addMember(sender.getName());
 								sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "Congratulations you have joined " + guildController.getPendingPlayerGuild().get(sender.getName()).getGuildName() + ".");	
+								
 							}
+							
+						}
+						
+					}
+					
+					if(args[0].equalsIgnoreCase("online")) {
+						
+						//Check if the sender is in a guild
+						if(guildController.isInGuild(sender.getName())){
+							
+							onlinePlayers = Bukkit.getOnlinePlayers();
+							listOfGuildMembers = "";
+							
+							//Runs through all players in the guild of the sender
+							for(int i = 0; i < guildController.getGuildOfPlayer(sender.getName()).getGuildSize(); i++){
+								
+								for(int j = 0; j < onlinePlayers.length; j++){
+									
+									if(onlinePlayers[j].getName().equalsIgnoreCase(guildController.getGuildOfPlayer(sender.getName()).getMemberArray()[i].toString())){
+										
+										listOfGuildMembers = listOfGuildMembers + ", " + onlinePlayers[j].getName() ;
+										
+									}
+									
+								}
+								
+							}
+							
+							sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "Here is a list of online players in your guild:");
+							sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE +  listOfGuildMembers.replaceFirst(", ", ""));
+							
+							
+						} else {
+							
+							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not in a guild");
+							
+						}
+						
+					}
+					
+					if(args[0].equalsIgnoreCase("list")){
+						
+						
+						//Check if the sender is in a guild
+						if(guildController.isInGuild(sender.getName())){
+							
+							listOfGuildMembers = "";
+							
+							//Runs through all players in the guild of the sender
+							for(int i = 0; i < guildController.getGuildOfPlayer(sender.getName()).getGuildSize(); i++){
+								
+								listOfGuildMembers = listOfGuildMembers + ", " + guildController.getGuildOfPlayer(sender.getName()).getMemberArray()[i] ;
+								
+							}
+							
+							sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "Here is a list of all players in your guild:");
+							sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE +  listOfGuildMembers.replaceFirst(", ", ""));
+							
+							
+						} else {
+							
+							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not in a guild");
 							
 						}
 						

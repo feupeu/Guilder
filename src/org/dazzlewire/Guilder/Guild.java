@@ -230,8 +230,17 @@ public class Guild {
 				checkFiles(); // Check if the file exists
 			}
 			
+			//Updates the array containing members
+			setMemberList();
+			
 			// Reload the config
 			fixGuild();
+			
+			//Tells the guild that a new member have joined
+			this.sendMessage(ChatColor.WHITE + playerName + " has joined the guild." , "");
+			
+			//Tells the server admin that a player have joined a guild
+			Bukkit.getLogger().info(playerName + "has been added to" + getGuildName());
 			
 		} catch(NullPointerException npe)  {
 			fixGuild();
@@ -259,9 +268,13 @@ public class Guild {
 				
 				// Check if name of the sender is provided
 				if(playerName.equalsIgnoreCase("")) {
-					players[i].sendMessage(ChatColor.DARK_GREEN + "[G] " + message);
+					players[i].sendMessage(ChatColor.DARK_GREEN + "<" +  this.getGuildName() + "> " + message);
 				} else { // A player name is provided
-					players[i].sendMessage(ChatColor.DARK_GREEN + "[G] " + playerName + ": " + message);
+					players[i].sendMessage(ChatColor.DARK_GREEN + "<" +  playerName + "> " + ChatColor.WHITE + message);
+					
+					//Loggs the chat in the server logg
+					Bukkit.getLogger().info("[" + this.getGuildName() + "] " + "<" +  playerName + "> " + message);
+					
 				}
 			}
 			
