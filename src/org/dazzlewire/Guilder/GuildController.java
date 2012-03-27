@@ -33,6 +33,16 @@ public class GuildController {
 	private HashMap<String, Long> pendingPlayerTime = new HashMap<String, Long>();
 	
 	/**
+	 * Contain all pending players and what Guild they are leaving from.
+	 */
+	private HashMap<String,Guild> leavingPlayerGuild = new HashMap<String,Guild>();
+	
+	/**
+	 * Contain all leaving players and when they started leaving.
+	 */
+	private HashMap<String, Long> leavingPlayerTime = new HashMap<String, Long>();
+	
+	/**
 	 * Contains all guilds
 	 */
 	private ArrayList<Guild> guildList = new ArrayList<Guild>();
@@ -280,6 +290,48 @@ public class GuildController {
 
 	}
 	
+	/**
+	 * Set the player to be leaving a guild
+	 * @param playerName
+	 * @param guild
+	 */
+	public void setLeave(String playerName, Guild guild) {
+		
+		// Try to check if there is a leave pending
+		try {
+			if(System.currentTimeMillis() - leavingPlayerTime.get(playerName) <= 5000 ){
+				
+				removeInvite(playerName, guild);
+				
+				// Add player to the leaving player HashMaps
+				leavingPlayerGuild.put(playerName, guild);
+				leavingPlayerTime.put(playerName, System.currentTimeMillis());
+				
+			}
+		} catch(NullPointerException e) {
+			// Add player to the leaving player HashMaps
+			leavingPlayerGuild.put(playerName, guild);
+			leavingPlayerTime.put(playerName, System.currentTimeMillis());
+		}
+	}
+	
+	/**
+	 * Removes the player from its current leave
+	 * @param playerName
+	 * @param guild
+	 */
+	public void removeLeave(String playerName, Guild guild) {
+		
+		// Check if there is a pending leave
+		try {
+			leavingPlayerGuild.remove(playerName);
+			leavingPlayerTime.remove(playerName);
+		} catch(NullPointerException e) {
+			
+		}
+
+	}
+	
 	//Getters
 	
 	//Gets a Map of player-names and the guild they have been invited to
@@ -292,6 +344,18 @@ public class GuildController {
 	public HashMap<String, Long> getPendingPlayerTime() {
 		
 		return pendingPlayerTime;
+	}
+	
+	//Gets a Map of player-names and the guild they have been invited to
+	public HashMap<String,Guild> getLeavingPlayerGuild() {
+		
+		return leavingPlayerGuild;
+		
+	}
+	//Gets a Map of player-names and the time they were invited at
+	public HashMap<String, Long> getLeavingPlayerTime() {
+		
+		return leavingPlayerTime;
 	}
 	
 	public boolean isInGuild(String playerName) {
@@ -315,12 +379,15 @@ public class GuildController {
 		
 	}
 	
-	public boolean ownGuild(String playerName) {
+	
+	
+	public boolean ownsGuild(String playerName) {
 		
 		for (int i = 0; i < getGuildList().size(); i++) { // Run through all guilds
 			
 			// Check if the player is guildmaster of any guild
 			if(playerName.equalsIgnoreCase(getGuildList().get(i).getGuildMaster())) {
+				
 				return true;
 			}
 			

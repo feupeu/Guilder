@@ -248,6 +248,35 @@ public class Guild {
 		}
 	}
 	
+	public void removeMember(String playerName) {
+		
+		try {
+			guildSpecific.getList("Members").remove(playerName);
+			try {
+				guildSpecific.save(guildSpecificFile);
+			} catch (IOException ioe) {
+				checkFiles(); // Check if the file exists
+			}
+			
+			//Updates the array containing members
+			setMemberList();
+			
+			// Reload the config
+			fixGuild();
+			
+			//Tells the guild that a new member have joined
+			this.sendMessage(ChatColor.WHITE + playerName + " has left the guild." , "");
+			
+			//Tells the server admin that a player have joined a guild
+			Bukkit.getLogger().info(playerName + " has left " + getGuildName());
+			
+		} catch(NullPointerException npe)  {
+			fixGuild();
+			removeMember(playerName);
+		}
+	}
+
+	
 	/**
 	 * Send a message to the members of the guild
 	 * @param message The message the entire guild should recieve

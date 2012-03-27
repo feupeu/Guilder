@@ -201,7 +201,7 @@ public class Guilder extends JavaPlugin implements Listener {
 								
 								
 								// If the player is not in a guild
-								if(!guildController.ownGuild(sender.getName())) {
+								if(!guildController.ownsGuild(sender.getName())) {
 								
 									// If the player owns a guild
 									if(!guildController.isInGuild(sender.getName())) {
@@ -254,6 +254,9 @@ public class Guilder extends JavaPlugin implements Listener {
 						helpCommands.add("/guilder help");
 						helpCommands.add("/guilder guildlist");
 						helpCommands.add("/guilder list");
+						helpCommands.add("/guilder online");
+						helpCommands.add("/guilder remove");
+						helpCommands.add("/guilder leave");
 						
 						// Order the arraylist alphabetic
 						Collections.sort(helpCommands);
@@ -307,7 +310,7 @@ public class Guilder extends JavaPlugin implements Listener {
 						if(args.length == 2) {
 							
 								//Checks if the sender is in a guild or is a guildmaster
-								if(guildController.ownGuild(sender.getName()) || guildController.isInGuild(sender.getName())) {
+								if(guildController.ownsGuild(sender.getName()) || guildController.isInGuild(sender.getName())) {
 									
 									//Checks if the reciever of the invite is not in a guild
 									if(!guildController.isInGuild(args[1].toLowerCase())) {
@@ -325,8 +328,8 @@ public class Guilder extends JavaPlugin implements Listener {
 												guildController.setInvite(onlinePlayers[i].getName(), guildController.getGuildOfPlayer(sender.getName()));
 												
 												//Sends information to both sender and reciever
-												sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "You have invited " + onlinePlayers[i].getName() + " to join your guild. He will have to accept your invite using /guilder accept.");
-												onlinePlayers[i].sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "You have been invited to join " + guildController.getGuildOfPlayer(sender.getName()).getGuildName() + " by " + sender.getName() +  ". Accept your invite using /guilder accept.");
+												sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "You have invited " + onlinePlayers[i].getName() + " to join your guild. He will have to accept your invite using /guilder acceptinvite.");
+												onlinePlayers[i].sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "You have been invited to join " + guildController.getGuildOfPlayer(sender.getName()).getGuildName() + " by " + sender.getName() +  ". Accept your invite using /guilder acceptinvite.");
 												isOnline = true;
 												
 											} 
@@ -356,7 +359,7 @@ public class Guilder extends JavaPlugin implements Listener {
 					/**
 					 * THE /guilder accept - command
 					 */
-					} else if(args[0].equalsIgnoreCase("accept")){
+					} else if(args[0].equalsIgnoreCase("acceptinvite")){
 						
 						//Check if the player is invites to a guild
 						if(guildController.getPendingPlayerGuild().containsKey(sender.getName())) {
@@ -374,7 +377,7 @@ public class Guilder extends JavaPlugin implements Listener {
 						
 					}
 					
-					if(args[0].equalsIgnoreCase("online")) {
+					else if(args[0].equalsIgnoreCase("online")) {
 						
 						//Check if the sender is in a guild
 						if(guildController.isInGuild(sender.getName())){
@@ -409,7 +412,7 @@ public class Guilder extends JavaPlugin implements Listener {
 						
 					}
 					
-					if(args[0].equalsIgnoreCase("list")){
+					else if(args[0].equalsIgnoreCase("list")){
 						
 						
 						//Check if the sender is in a guild
@@ -435,6 +438,75 @@ public class Guilder extends JavaPlugin implements Listener {
 						}
 						
 					}
+					
+					else if(args[0].equalsIgnoreCase("leave")){
+						
+						if(guildController.isInGuild(sender.getName())){
+							
+							if(!guildController.ownsGuild(sender.getName())){
+
+								guildController.setLeave(sender.getName(), guildController.getGuildOfPlayer(sender.getName()));
+								sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "Are you sure you want to leave " + guildController.getGuildOfPlayer(sender.getName()).getGuildName() + "? Type /guilder acceptleave to confirm your action.");
+							
+							}
+							
+							else {
+								sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You cannot leave a guild that you own");
+							}
+							
+						} else {
+							
+							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not in a guild");
+							
+						}
+						
+					}
+					
+					else if(args[0].equalsIgnoreCase("acceptleave")){
+						
+						//Check if the player has tried to leave a guild
+						if(guildController.getLeavingPlayerGuild().containsKey(sender.getName())) {
+							
+							//Check if the player has asked to leave to a guild in the last 20 minutes
+							if(System.currentTimeMillis() - guildController.getLeavingPlayerTime().get(sender.getName()) <= 180000) {
+								
+								//Removes the member to the specific guild
+								guildController.getLeavingPlayerGuild().get(sender.getName()).removeMember(sender.getName());
+								sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "You have succesfully left " + guildController.getPendingPlayerGuild().get(sender.getName()).getGuildName() + ".");	
+								
+							}
+							
+						}
+						
+					}
+					
+					/*else if(args[0].equalsIgnoreCase("remove")){
+						
+						if(guildController.isInGuild(sender.getName())){
+							
+							if(guildController.getGuildOfPlayer(sender.getName()).getGuildMaster().equalsIgnoreCase(sender.getName())){
+								
+								if(guildController.getGuildOfPlayer(sender.getName()).equals(guildController.getGuildOfPlayer(args[1]))){
+									
+									guildController.getGuildOfPlayer(sender.getName()).removeMember(args[1]);
+									
+								} else {
+									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "That player is not in your guild");
+								}
+								
+							} else {
+								sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not guildmaster of this guild" );
+							}
+							
+						} else {
+							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not in a guild" );
+						}
+						
+
+						
+					}*/
+					
+					
 				
 				}
 			
