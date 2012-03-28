@@ -480,11 +480,15 @@ public class Guilder extends JavaPlugin implements Listener {
 						
 					}
 					
-					/*else if(args[0].equalsIgnoreCase("remove")){
+					else if(args[0].equalsIgnoreCase("remove")){
 						
 						if(guildController.isInGuild(sender.getName())){
 							
-							if(guildController.getGuildOfPlayer(sender.getName()).getGuildMaster().equalsIgnoreCase(sender.getName())){
+							//Declares a guild in reference to the guild of the sender
+							Guild guild = guildController.getGuildOfPlayer(sender.getName());
+							sender.sendMessage("Guildname:" + guild.getGuildName() + "Guildmaster:" + guild.getGuildMaster());
+							
+							if(guild != null && guild.getGuildMaster() != null && guild.getGuildMaster().equalsIgnoreCase(sender.getName())){
 								
 								if(guildController.getGuildOfPlayer(sender.getName()).equals(guildController.getGuildOfPlayer(args[1]))){
 									
@@ -504,7 +508,7 @@ public class Guilder extends JavaPlugin implements Listener {
 						
 
 						
-					}*/
+					}
 					
 					
 				

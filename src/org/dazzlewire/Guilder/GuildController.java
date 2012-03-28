@@ -414,7 +414,7 @@ public class GuildController {
 			
 		}
 		
-		return new Guild(p, "", "");
+		return null;
 		
 	}
 	
