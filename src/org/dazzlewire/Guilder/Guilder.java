@@ -568,27 +568,27 @@ public class Guilder extends JavaPlugin implements Listener {
 											
 										}
 										
-									// The pprovided player is not in a guild
+									// The provided player is not in the same guild as the guildmaster guild
 									} else {
-										sender.sendMessage("5");
+										sender.sendMessage(args[1]+" is not in your guild");
 										return false;
 									}
 									
 								// The sender is not the guildmaster	
 								} else {
-									sender.sendMessage("1");
+									sender.sendMessage("You are not a guildmaster");
 									return false;
 								}
 							
 							// The sender is not in a guild
 							} else {
-								sender.sendMessage("2");
+								sender.sendMessage(args[1]+" is not in a guild");
 								return false;
 							}
 						
 						// No player is specified
 						} else {
-							sender.sendMessage("4");
+							sender.sendMessage("You need to specify a targeted player. Use /guilder remove <player> to remove \"player\" from your guild");
 							return false;
 						}
 						
