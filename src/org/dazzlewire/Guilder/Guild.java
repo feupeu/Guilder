@@ -44,6 +44,8 @@ public class Guild {
 
 	private String guildMaster;
 	
+	private String guildMessage;
+	
 	/**
 	 * An array with online players
 	 */
@@ -73,6 +75,9 @@ public class Guild {
 		
 		// Set the member list
 		setGuildMaster();
+		
+		// Set the message of the day
+		setGuildMessage();
 		
 	}
 
@@ -106,6 +111,39 @@ public class Guild {
 	
 	// Fixes any syntax-errors there might be in the file
 	private void fixGuild() {
+		
+		// Try to add "Guildmessage"
+		try {
+			if(!guildSpecific.get("Guildmessage").equals("")) {
+				// Add defaults
+				guildSpecific.addDefault("Guildmessage", guildMaster);
+				guildSpecific.options().copyDefaults(true);
+				
+				// Save the file
+				try {
+					guildSpecific.save(guildSpecificFile);
+				} catch (IOException ioe) {
+					// Handle exception
+				}
+				
+				// Reload the config
+				guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
+			}
+		} catch(NullPointerException npe) {
+			// Add defaults
+			guildSpecific.addDefault("Guildmessage", "Welcome to the guild "+this.guildName);
+			guildSpecific.options().copyDefaults(true);
+			
+			// Save the file
+			try {
+				guildSpecific.save(guildSpecificFile);
+			} catch (IOException ioe) {
+				// Handle exception
+			}
+			
+			// Reload the config
+			guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
+		}
 		
 		// Try to add "Guildmaster"
 		try {
@@ -340,6 +378,18 @@ public class Guild {
 		
 	}
 	
+	private void setGuildMessage() {
+		
+		// Load the guildmaster from the file and correct the variable
+		try {
+			guildMessage = guildSpecific.get("Guildmessage").toString();
+		} catch (NullPointerException npe) {
+			fixGuild();
+			setGuildMessage();
+		}
+		
+	}
+	
 	/**
 	 * Set a rank-object to a specific player
 	 * @param playerName which player needs to get his rank modified?
@@ -363,6 +413,14 @@ public class Guild {
 	 */
 	public String getGuildName() {
 		return guildName;
+	}
+	
+	/**
+	 * Get guildMessage
+	 * @return The guildmessage of the day in the guild
+	 */
+	public String getGuildMessage() {
+		return guildMessage;
 	}
 	
 	/**
