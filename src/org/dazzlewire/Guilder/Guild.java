@@ -99,7 +99,7 @@ public class Guild {
 		
 		guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile); //get the yml-config from the guildSpecificFile
 		
-		fixGuild();
+		saveGuild();
 		
 		try {
         	guildSpecific.save(guildSpecificFile); // Save the file
@@ -109,14 +109,17 @@ public class Guild {
 		
 	}
 	
-	// Fixes any syntax-errors there might be in the file
-	private void fixGuild() {
+	/**
+	 * Saves all progress made in the guild
+	 * Fixes any problems there might be in the guild-specific file
+	 */
+	private void saveGuild() {
 		
 		// Try to add "Guildmessage"
 		try {
 			if(!guildSpecific.get("Guildmessage").equals("")) {
 				// Add defaults
-				guildSpecific.addDefault("Guildmessage", guildMaster);
+				guildSpecific.addDefault("Guildmessage", guildMessage);
 				guildSpecific.options().copyDefaults(true);
 				
 				// Save the file
@@ -275,7 +278,7 @@ public class Guild {
 			setMemberList();
 			
 			// Reload the config
-			fixGuild();
+			saveGuild();
 			
 			//Tells the guild that a new member have joined
 			this.sendMessage(ChatColor.WHITE + playerName + " has joined the guild." , "");
@@ -284,7 +287,7 @@ public class Guild {
 			Bukkit.getLogger().info(playerName + "has been added to" + getGuildName());
 			
 		} catch(NullPointerException npe)  {
-			fixGuild();
+			saveGuild();
 			addMember(playerName);
 		}
 	}
@@ -311,7 +314,7 @@ public class Guild {
 			Bukkit.getLogger().info(playerName + " has left " + getGuildName());
 			
 		} catch(NullPointerException npe)  {
-			fixGuild();
+			saveGuild();
 			removeMember(playerName);
 		}
 	}
@@ -359,8 +362,9 @@ public class Guild {
 		// Load the memberlist from the file and add them to the arraylist
 		try {
 			memberArray = guildSpecific.getList("Members").toArray(); // Make a tmp array with the guilds loaded from the file
+			saveGuild(); // Save the files
 		} catch (NullPointerException npe) {
-			fixGuild();
+			saveGuild();
 			setMemberList();
 		}
 		
@@ -371,8 +375,9 @@ public class Guild {
 		// Load the guildmaster from the file and correct the variable
 		try {
 			guildMaster = guildSpecific.get("Guildmaster").toString();
+			saveGuild(); // Save the files
 		} catch (NullPointerException npe) {
-			fixGuild();
+			saveGuild();
 			setGuildMaster();
 		}
 		
@@ -383,10 +388,19 @@ public class Guild {
 		// Load the guildmaster from the file and correct the variable
 		try {
 			guildMessage = guildSpecific.get("Guildmessage").toString();
+			saveGuild(); // Save the files
 		} catch (NullPointerException npe) {
-			fixGuild();
+			saveGuild();
 			setGuildMessage();
 		}
+		
+	}
+	
+	public void updateGuildMessage(String guildMessage) {
+		
+		this.guildMessage = guildMessage;
+		guildSpecific.set("Guildmessage", guildMessage);
+		saveGuild();
 		
 	}
 	

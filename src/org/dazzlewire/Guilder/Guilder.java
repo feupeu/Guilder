@@ -570,25 +570,83 @@ public class Guilder extends JavaPlugin implements Listener {
 										
 									// The provided player is not in the same guild as the guildmaster guild
 									} else {
-										sender.sendMessage(args[1]+" is not in your guild");
+										sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + args[1]+" is not in your guild");
 										return false;
 									}
 									
 								// The sender is not the guildmaster	
 								} else {
-									sender.sendMessage("You are not a guildmaster");
+									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not a guildmaster");
 									return false;
 								}
 							
 							// The sender is not in a guild
 							} else {
-								sender.sendMessage(args[1]+" is not in a guild");
+								sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + args[1]+" is not in a guild");
 								return false;
 							}
 						
 						// No player is specified
 						} else {
-							sender.sendMessage("You need to specify a targeted player. Use /guilder remove <player> to remove \"player\" from your guild");
+							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You need to specify a targeted player. Use /guilder remove <player> to remove \"player\" from your guild");
+							return false;
+						}
+					
+					}
+						
+					/**
+					 * The /guilder set-command
+					 * Only accesable for the guildmaster
+					 */
+					else if(args[0].equalsIgnoreCase("set")) {
+						
+						// Check if player is in a guild
+						if(guildController.isInGuild(sender.getName())) {
+							
+							// Check if the player is the guildmaster of a guild
+							if(guildController.ownsGuild(sender.getName())) {
+								
+								// Check if there is enough arguments
+								if(args.length >= 3 && args[1].equalsIgnoreCase("guildmessage")) {
+									// Create an empty message
+									String guildMessage = "";
+									
+									// Combine the rest of the arguments
+									for(int j = 2; j < args.length; j++) { // Start with j=2, because of the 2 first arguments already being used.
+										guildMessage = guildMessage + " " + args[j];
+									}
+									
+									guildMessage = guildMessage.replaceFirst(" ", "");
+									
+									// Set the guild message
+									guildController.getGuildOfPlayer(sender.getName()).updateGuildMessage(guildMessage);
+									guildController.getGuildOfPlayer(sender.getName()).sendMessage("The guildmessage have been changed:", "");
+									guildController.getGuildOfPlayer(sender.getName()).sendMessage(guildMessage, "");
+									
+									return true;
+									
+								} else if(args.length >= 3 && args[1].equalsIgnoreCase("guildname")) {
+									// TODO: Implement me
+								}
+								
+								// Not enough arguments from the user
+								else {
+									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You need to use one of the following commands:");
+									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "/guilder set guildname <guildname>");
+									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "/guilder set guildmessage <guildmessage>");
+									return false;
+								}
+								
+								
+							// The commandsender is not the guildmaster
+							} else {
+								sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not the guildmaster of this guild");
+								return false;
+							}
+							
+						// The commandsender is not in any guild
+						} else {
+							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not in a guild");
 							return false;
 						}
 						
