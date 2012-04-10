@@ -14,7 +14,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -65,6 +67,23 @@ public class Guilder extends JavaPlugin implements Listener {
 	public void onDisable() {
 		PluginDescriptionFile pdf = this.getDescription();
 		this.logger.info(pdf.getName() + " is now disabled. Running version " + pdf.getVersion());
+	}
+	
+	/**
+	 * On player join
+	 */
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		
+		// Check if the player is in a guild
+		if(guildController.isInGuild(event.getPlayer().getName())) {
+		
+			event.getPlayer().sendMessage(ChatColor.DARK_GREEN + "<" +  guildController.getGuildOfPlayer((event.getPlayer().getName())).getGuildName() + "> " + guildController.getGuildOfPlayer((event.getPlayer().getName())).getGuildMessage());
+			guildController.getGuildOfPlayer(event.getPlayer().getName()).sendMessage(event.getPlayer().getName()+" has come online", "");
+			Bukkit.getLogger().info("det virker");
+			
+		}
+		
 	}
 	
 	/**
