@@ -110,29 +110,34 @@ public class Guilder extends JavaPlugin implements Listener {
 			// Check if the sender is a player
 			if(sender instanceof Player) {
 				
+				/**
+				 * The /guilder command
+				 * Will snow information about the Guilder mod.
+				 */
+				if(args.length == 0) {
+					sender.sendMessage(ChatColor.GREEN + "[Guilder]" + ChatColor.WHITE + " will add guild functionality to your Bukkit servers.");
+					sender.sendMessage("If you want a list of the commands used in the Guilder mod, you should type /guilder help");
+				}
+				
 				// Check if the user send at lease 1 argument
-				if(args.length > 0) {
-					
-					/*
-					 *  GUILDER RELOAD COMMAND
-					 *  /guilder reload
+				else if(args.length > 0) {
+
+					/**
+					 * The /guilder reload command
+					 * Reload the guild 
 					 */
-					
 					if(args[0].equalsIgnoreCase("reload")) {
 						
 						this.onEnable();
-						
 						sender.sendMessage(ChatColor.GREEN + "[Guilder] " + ChatColor.WHITE + "has been reloaded");
-						
 						return true;
 						
 					}
 					
-					/*
-					 *  GUILDER LIST COMMAND
-					 *  /guilder guildlist
+					/**
+					 * The /guilder guildlist command
+					 * Lists all the guilds in the plugin-folder
 					 */
-					
 					if(args[0].equalsIgnoreCase("guildlist")) {
 						
 						// Desclare new variabels
@@ -184,9 +189,9 @@ public class Guilder extends JavaPlugin implements Listener {
 						return true;
 					}
 					
-					/*
-					 *  GUILDER CREATE COMMAND
-					 *  /guilder create <guildname>
+					/**
+					 * The /guilder create 
+					 * Will create a guild with the specified name
 					 */
 					else if(args[0].equalsIgnoreCase("create")) { // "/guilder create"-command
 						
@@ -197,8 +202,6 @@ public class Guilder extends JavaPlugin implements Listener {
 							
 							// Check if the guild exists
 							if(!guildController.guildExists(specifiedGuildName)) {
-								
-								
 								
 								// If the player is not in a guild
 								if(!guildController.ownsGuild(sender.getName())) {
@@ -211,33 +214,39 @@ public class Guilder extends JavaPlugin implements Listener {
 									
 									sender.sendMessage(ChatColor.GREEN + "[Guilder]" + ChatColor.WHITE + " Congratulations. \"" + specifiedGuildName + "\" has been formed");
 									
+									return true;
+									
 									} else { // The player owns a guild
 										sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " You are already in a guild.");
+										return false;
 									}
 									
 								} else { // If the player is in a guild
 									sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " You already own a guild");
+									return false;
 								}
 								
 							} else { // There is already a guild with that name
-							sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " There is already a guild with the name \"" + args[1] + "\"");
+								sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " There is already a guild with the name \"" + args[1] + "\"");
+								return false;
 							}
 							
 						} else if(args.length > 2) {
 							sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " Guildnames must only contain 1 word");
 							sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " /guilder create <guild-name>");
+							return false;
 						} else if(args.length < 2) {
 							sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " Provide a name for your guild");
 							sender.sendMessage(ChatColor.RED + "[Guilder]" + ChatColor.WHITE + " /guilder create <guild-name>");
+							return false;
 						}
 						
 					}
 					
-					/*
-					 *  GUILDER HELP COMMAND
-					 *  /guilder help
+					/**
+					 * The /guilder help command
+					 * Will display all the commands
 					 */
-					
 					else if(args[0].equalsIgnoreCase("help")) {
 						
 						// Desclare new variabels
@@ -301,10 +310,11 @@ public class Guilder extends JavaPlugin implements Listener {
 						// Return true - the command is complete
 						return true;
 					}
-				/*
-				 *  GUILDER INVITE COMMAND
-				 *  /guilder invite <player-name>
-				 */
+
+					/**
+					 * The /guilder invite command
+					 * Invites a player to your guild
+					 */
 					else if(args[0].equalsIgnoreCase("invite")) {
 						
 						if(args.length == 2) {
@@ -537,32 +547,49 @@ public class Guilder extends JavaPlugin implements Listener {
 					 */
 					else if(args[0].equalsIgnoreCase("remove")){
 						
-						if(guildController.isInGuild(sender.getName())){
-							
-							//Declares a guild in reference to the guild of the sender
-							Guild guild = guildController.getGuildOfPlayer(sender.getName());
-							sender.sendMessage("Guildname:" + guild.getGuildName() + "Guildmaster:" + guild.getGuildMaster());
-							
-							if(guild != null && guild.getGuildMaster() != null && guild.getGuildMaster().equalsIgnoreCase(sender.getName())){
+						// Check if a player is specified
+						if(!args[1].equals("")) {
+						
+							// Check if the commandsender is in a guild
+							if(guildController.isInGuild(sender.getName())) {
 								
-								if(guildController.getGuildOfPlayer(sender.getName()).equals(guildController.getGuildOfPlayer(args[1]))){
+								// Check if the commandsender is the guildmaster of the guild
+								if(guildController.ownsGuild(sender.getName())) {
 									
-									guildController.getGuildOfPlayer(sender.getName()).removeMember(args[1]);
-									return true;
+									// Check if the provided player is in the guild
+									if(guildController.isInGuild(args[1])) {
 									
+										// Check if the provided player and the guildmaster is in the same guild
+										if(guildController.getGuildOfPlayer(sender.getName()).equals(guildController.getGuildOfPlayer(args[1]))) {
+											
+											// Remove the player
+											guildController.getGuildOfPlayer(sender.getName()).removeMember(args[1]);
+											return true;
+											
+										}
+										
+									// The pprovided player is not in a guild
+									} else {
+										sender.sendMessage("5");
+										return false;
+									}
+									
+								// The sender is not the guildmaster	
 								} else {
-									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "That player is not in your guild");
+									sender.sendMessage("1");
 									return false;
 								}
-								
-							} else {
-								sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not guildmaster of this guild");
-								return true;
-							}
 							
+							// The sender is not in a guild
+							} else {
+								sender.sendMessage("2");
+								return false;
+							}
+						
+						// No player is specified
 						} else {
-							sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are not in a guild");
-							return true;
+							sender.sendMessage("4");
+							return false;
 						}
 						
 					}

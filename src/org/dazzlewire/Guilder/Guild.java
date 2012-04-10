@@ -71,6 +71,9 @@ public class Guild {
 		// Set the member list
 		setMemberList();
 		
+		// Set the member list
+		setGuildMaster();
+		
 	}
 
 	// Checks if the needed filex excists
@@ -251,7 +254,9 @@ public class Guild {
 	public void removeMember(String playerName) {
 		
 		try {
-			guildSpecific.getList("Members").remove(playerName);
+			
+			// TODO: Write the new array without the player to the config file
+			
 			try {
 				guildSpecific.save(guildSpecificFile);
 			} catch (IOException ioe) {
@@ -260,9 +265,6 @@ public class Guild {
 			
 			//Updates the array containing members
 			setMemberList();
-			
-			// Reload the config
-			fixGuild();
 			
 			//Tells the guild that a new member have joined
 			this.sendMessage(ChatColor.WHITE + playerName + " has left the guild." , "");
@@ -322,6 +324,18 @@ public class Guild {
 		} catch (NullPointerException npe) {
 			fixGuild();
 			setMemberList();
+		}
+		
+	}
+	
+	private void setGuildMaster() {
+		
+		// Load the guildmaster from the file and correct the variable
+		try {
+			guildMaster = guildSpecific.get("Guildmaster").toString();
+		} catch (NullPointerException npe) {
+			fixGuild();
+			setGuildMaster();
 		}
 		
 	}

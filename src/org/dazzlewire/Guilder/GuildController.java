@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 // Bukkit import
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -385,9 +386,12 @@ public class GuildController {
 		
 		for (int i = 0; i < getGuildList().size(); i++) { // Run through all guilds
 			
+			Bukkit.getLogger().info(getGuildList().get(i).getGuildMaster());
+			Bukkit.getLogger().info(playerName);
+			Bukkit.getLogger().info("----");
+			
 			// Check if the player is guildmaster of any guild
 			if(playerName.equalsIgnoreCase(getGuildList().get(i).getGuildMaster())) {
-				
 				return true;
 			}
 			
@@ -399,23 +403,20 @@ public class GuildController {
 	
 	public Guild getGuildOfPlayer(String playerName) {
 		
-		
 		for (int i = 0; i < getGuildList().size(); i++) { // Run through all guilds
 			
 			// Check if the guild contains a player
 			for (int j = 0; j < getGuildList().get(i).getMemberArray().length; j++) {
 				
 				// Check if the player is in the MemberArray
-				if(playerName.equals(getGuildList().get(i).getMemberArray()[j])) {
+				if(playerName.equalsIgnoreCase((String) (getGuildList().get(i).getMemberArray()[j]))) {
 					return getGuildList().get(i);
 				}
 				
 			}
 			
 		}
-		
 		return null;
-		
 	}
 	
 	
