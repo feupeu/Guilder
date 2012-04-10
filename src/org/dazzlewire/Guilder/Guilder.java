@@ -82,6 +82,10 @@ public class Guilder extends JavaPlugin implements Listener {
 			guildController.getGuildOfPlayer(event.getPlayer().getName()).sendMessage(event.getPlayer().getName()+" has come online", "");
 			Bukkit.getLogger().info("det virker");
 			
+			// Will remove the original join message
+			// TODO: Add a config option weather you want to disable or enable this feature
+			// event.setJoinMessage("");
+			
 		}
 		
 	}
