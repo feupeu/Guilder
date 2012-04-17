@@ -366,8 +366,7 @@ public class GuildController {
 			for (int j = 0; j < getGuildList().get(i).getMemberArray().length; j++) {
 				
 				// Check if the player is in the MemberArray
-				if(playerName.toLowerCase().equals((getGuildList().get(i).getMemberArray()[j].toString().toLowerCase()))) {
-					
+				if(playerName.equalsIgnoreCase((getGuildList().get(i).getMemberArray()[j]).toString())) {
 					return true;
 				}
 				
@@ -379,7 +378,25 @@ public class GuildController {
 		
 	}
 	
-	
+	public boolean isOfficerInGuild(String playerName) {
+		
+		for (int i = 0; i < getGuildList().size(); i++) { // Run through all guilds
+			
+			// Check if the guild contains a player
+			for (int j = 0; j < getGuildList().get(i).getOfficerArray().length; j++) {
+				
+				// Check if the player is in the MemberArray
+				if(playerName.equalsIgnoreCase((getGuildList().get(i).getOfficerArray()[j]).toString())) {
+					return true;
+				}
+				
+			}
+			
+		}
+		
+		return false;
+		
+	}
 	
 	public boolean ownsGuild(String playerName) {
 		

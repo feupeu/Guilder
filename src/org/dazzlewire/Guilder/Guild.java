@@ -37,7 +37,7 @@ public class Guild {
 	private YamlConfiguration guildSpecific;
 	
 	private Object[] memberArray;
-	private Object[] OfficerArray;
+	private Object[] officerArray;
 	
 	/**
 	 * List all playernames and their ranks in a guild
@@ -418,7 +418,7 @@ public class Guild {
 		
 		// Load the memberlist from the file and add them to the arraylist
 		try {
-			memberArray = guildSpecific.getList("Officer").toArray(); // Make a tmp array with the guilds loaded from the file
+			officerArray = guildSpecific.getList("Officer").toArray(); // Make a tmp array with the guilds loaded from the file
 			saveGuild(); // Save the files
 		} catch (NullPointerException npe) {
 			saveGuild();
@@ -516,6 +516,10 @@ public class Guild {
 	 */
 	public Object[] getMemberArray() {
 		return memberArray;
+	}
+	
+	public Object[] getOfficerArray() {
+		return officerArray;
 	}
 	
 	/**
