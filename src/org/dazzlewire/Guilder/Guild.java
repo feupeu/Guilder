@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 // Bukkit imports
 import org.bukkit.Bukkit;
@@ -296,7 +297,20 @@ public class Guild {
 		
 		try {
 			
-			// TODO: Write the new array without the player to the config file
+			// Make a temp list with all the members in it
+			List<Object> tmp = guildSpecific.getList("Members");
+			
+			// Run through all the players, checking if the player should be removed
+			for(int i = 0; i < tmp.size(); i++) {
+				
+				if(((String)tmp.get(i)).equalsIgnoreCase(playerName)) {
+					tmp.remove(tmp.get(i));
+				}
+				
+			}
+			
+			// Remove the player from the guild object
+			memberArray = tmp.toArray();
 			
 			try {
 				guildSpecific.save(guildSpecificFile);
@@ -304,7 +318,7 @@ public class Guild {
 				checkFiles(); // Check if the file exists
 			}
 			
-			//Updates the array containing members
+			// Updates the array containing members
 			setMemberList();
 			
 			//Tells the guild that a new member have joined

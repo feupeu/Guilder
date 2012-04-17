@@ -342,7 +342,7 @@ public class Guilder extends JavaPlugin implements Listener {
 						
 						if(args.length == 2) {
 							
-								//Checks if the sender is in a guild or is a guildmaster
+								// Checks if the sender is in a guild or is a guildmaster
 								if(guildController.ownsGuild(sender.getName()) || guildController.isInGuild(sender.getName())) {
 									
 									//Checks if the reciever of the invite is not in a guild
