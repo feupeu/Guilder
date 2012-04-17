@@ -37,6 +37,7 @@ public class Guild {
 	private YamlConfiguration guildSpecific;
 	
 	private Object[] memberArray;
+	private Object[] OfficerArray;
 	
 	/**
 	 * List all playernames and their ranks in a guild
@@ -73,6 +74,9 @@ public class Guild {
 		
 		// Set the member list
 		setMemberList();
+		
+		// Set the officer list
+		setOfficerList();
 		
 		// Set the member list
 		setGuildMaster();
@@ -218,7 +222,7 @@ public class Guild {
 		
 		// Try to load the "Members"-list in the file
 		try {
-			guildSpecific.getList("Members").toArray(); // Make a tmp array with the guilds loaded from the file
+			guildSpecific.getList("Members").toArray();
 		} catch(NullPointerException npe) {
 			
 			// Add defaults
@@ -228,6 +232,29 @@ public class Guild {
 				tmpMembersArray[0] = guildMaster;
 			}
 			guildSpecific.addDefault("Members", Arrays.asList(tmpMembersArray));
+			guildSpecific.options().copyDefaults(true);
+			
+			// Save the file
+			try {
+				guildSpecific.save(guildSpecificFile);
+			} catch (IOException ioe) {
+				// Handle exception
+			}
+			
+			// Reload the config
+			guildSpecific = YamlConfiguration.loadConfiguration(guildSpecificFile);
+			
+		}
+		
+		// Try to load the "Officer"-list in the file
+		try {
+			guildSpecific.getList("Officer").toArray();
+		} catch(NullPointerException npe) {
+			
+			// Add defaults
+			Object[] tmpOfficersArray = {"FirstOfficerGoesHere"};
+			
+			guildSpecific.addDefault("Officer", Arrays.asList(tmpOfficersArray));
 			guildSpecific.options().copyDefaults(true);
 			
 			// Save the file
@@ -380,6 +407,22 @@ public class Guild {
 		} catch (NullPointerException npe) {
 			saveGuild();
 			setMemberList();
+		}
+		
+	}
+	
+	/**
+	 * Load the Officerlist from the guild specific file
+	 */
+	private void setOfficerList() {
+		
+		// Load the memberlist from the file and add them to the arraylist
+		try {
+			memberArray = guildSpecific.getList("Officer").toArray(); // Make a tmp array with the guilds loaded from the file
+			saveGuild(); // Save the files
+		} catch (NullPointerException npe) {
+			saveGuild();
+			setOfficerList();
 		}
 		
 	}
