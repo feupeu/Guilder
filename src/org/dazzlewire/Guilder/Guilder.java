@@ -378,7 +378,7 @@ public class Guilder extends JavaPlugin implements Listener {
 							if(args.length == 2) {
 								
 									// Checks if the sender is in a guild or is a guildmaster
-									if(guildController.ownsGuild(sender.getName()) || guildController.isInGuild(sender.getName())) {
+									if(guildController.ownsGuild(sender.getName()) || guildController.isOfficerInGuild(sender.getName())) {
 										
 										//Checks if the reciever of the invite is not in a guild
 										if(!guildController.isInGuild(args[1].toLowerCase())) {
@@ -419,7 +419,7 @@ public class Guilder extends JavaPlugin implements Listener {
 											return false;
 										}
 									} else {
-										sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You are a not in a guild");
+										sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You do not have the permissions to invite people to this guild. Only officers and the guildmaster is able to invite people into the guild");
 										return false;
 									}
 								
