@@ -471,11 +471,19 @@ public class Guild {
 	}
 	
 	/**
-	 * Gets the name of the guildmaster
+	 * Sets the name of the guildmaster
 	 * @param guildMaster
 	 */
 	public void setGuildMaster(String guildMaster) {
 		this.guildMaster = guildMaster;
+	}
+	
+	/**
+	 * Sets the name of the guild
+	 * @param guildMaster
+	 */
+	public void setGuildName(String guildName) {
+		this.guildName = guildName;
 	}
 	
 	/**

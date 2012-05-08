@@ -316,7 +316,7 @@ public class Guilder extends JavaPlugin implements Listener {
 						// Add values to this arraylist
 						helpCommands.add("/guilder");
 						helpCommands.add("/guilder create <guildname>");
-						helpCommands.add("/guilder help");
+						helpCommands.add("/guilder help <page>");
 						helpCommands.add("/guilder guildlist");
 						helpCommands.add("/guilder list");
 						helpCommands.add("/guilder online");
@@ -694,7 +694,29 @@ public class Guilder extends JavaPlugin implements Listener {
 									return true;
 									
 								} else if(args.length >= 3 && args[1].equalsIgnoreCase("guildname")) {
-									// TODO: Implement me
+								
+									if(args.length > 3) {
+										sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "Guildnames must only contain 1 word");
+										return false;											
+									} else {
+
+										String guildName = args[2];
+																	
+										// Check if there is allready a guild with that name
+										if(!guildController.guildExists(guildName)) {
+
+											guildController.getGuildOfPlayer(sender.getName()).setGuildName(guildName);
+											guildController.getGuildOfPlayer(sender.getName()).sendMessage("The guild is now called: "+guildName, "");
+											
+											return true;
+											
+										} else {
+											sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "There is allready a guild with the name \""+guildName+"\"");
+											return false;
+										}
+										
+									}
+									
 								}
 								
 								// Not enough arguments from the user
