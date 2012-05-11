@@ -315,13 +315,17 @@ public class Guilder extends JavaPlugin implements Listener {
 						
 						// Add values to this arraylist
 						helpCommands.add("/guilder");
+						helpCommands.add("/g <guildchat>");
 						helpCommands.add("/guilder create <guildname>");
 						helpCommands.add("/guilder help <page>");
+						helpCommands.add("/guilder invite <playername>");
 						helpCommands.add("/guilder guildlist");
+						helpCommands.add("/guilder set guildemessage <guildmessage>");
 						helpCommands.add("/guilder list");
 						helpCommands.add("/guilder online");
-						helpCommands.add("/guilder remove");
+						helpCommands.add("/guilder remove <playername>");
 						helpCommands.add("/guilder leave");
+						helpCommands.add("/guilder set guildname <guildname>");
 						
 						// Order the arraylist alphabetic
 						Collections.sort(helpCommands);
