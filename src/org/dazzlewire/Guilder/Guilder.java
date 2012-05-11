@@ -697,37 +697,12 @@ public class Guilder extends JavaPlugin implements Listener {
 									
 									return true;
 									
-								} else if(args.length >= 3 && args[1].equalsIgnoreCase("guildname")) {
-								
-									if(args.length > 3) {
-										sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "Guildnames must only contain 1 word");
-										return false;											
-									} else {
-
-										String guildName = args[2];
-																	
-										// Check if there is allready a guild with that name
-										if(!guildController.guildExists(guildName)) {
-
-											guildController.getGuildOfPlayer(sender.getName()).setGuildName(guildName);
-											guildController.getGuildOfPlayer(sender.getName()).sendMessage("The guild is now called: "+guildName, "");
-											
-											return true;
-											
-										} else {
-											sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "There is allready a guild with the name \""+guildName+"\"");
-											return false;
-										}
-										
-									}
-									
-								}
+								} 
 								
 								// Not enough arguments from the user
 								else {
 									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "You need to use one of the following commands:");
 									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "/guilder set guildname <guildname>");
-									sender.sendMessage(ChatColor.RED + "[Guilder] " + ChatColor.WHITE + "/guilder set guildmessage <guildmessage>");
 									return false;
 								}
 								
